@@ -3,17 +3,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Resquest;
+use Illuminate\Http\Request;
+
+
 
 
 class PessoaController extends Controller
 {
-   public function cadastrar(Resquest $request){
+   public function cadastrar(Request $request){
 
    		return view("verPessoa", [
    			'nome' => $request->input('nome'),
    			'email' => $request->input('email'),
-   			'cpf' => $request->input('cpf'),
+   			'cpf' => $request-> input('cpf'),
    			]);
    }
    public function cadastro(){
