@@ -18,8 +18,10 @@ $app->get('/', function () use ($app) {
 $app->get('/hello/', 'HelloController@helloDefault');
 $app->get('/hello/{name}', 'HelloController@hello');
 
-//$app->post('/pessoas/', 'PessoaController@cadastrar');
 $app->post('/pessoas/', 'PessoaController@cadastrar');
+$app->get('/pessoas/', 'PessoaController@listar');
 $app->get('/pessoas/cadastro', 'PessoaController@cadastro');
+
+$app->get('/filmes/', 'FilmeController@listar');
 
 ?>

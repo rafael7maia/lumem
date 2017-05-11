@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 	<head>
 		<title></title>
@@ -11,5 +10,7 @@
 				<li> <?php echo $email; ?></li>
 				<li> <?php echo $cpf; ?></li>
 			</ul>
+			<a href="/pessoas/"> Lista de Pessoas</a>
 	</body>
+
 </html>
