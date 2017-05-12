@@ -13,6 +13,7 @@ return [
     |
     */
 
+    'cpf'                  => 'The :attribute must be valid.',
     'accepted'             => 'The :attribute must be accepted.',
     'active_url'           => 'The :attribute is not a valid URL.',
     'after'                => 'The :attribute must be a date after :date.',

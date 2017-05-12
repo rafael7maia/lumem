@@ -16,7 +16,7 @@ class PessoaController extends Controller
             $this->validate($request, [
                'nome' => 'required',
                'email' => 'required|email',
-               'cpf' => 'required',
+               'cpf' => 'required|cpf',
                ]);
 
             $nome = $request->input('nome');

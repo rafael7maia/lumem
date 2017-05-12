@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,97 +13,41 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
 
-
 	public function boot(){
 		 
-	    Validator::extend('cpf', function($attribute, $value, $parameters)
-	    {
-	        /*
-	         * Salva em $cpf apenas numeros, isso permite receber o cpf em diferentes formatos,
-	         * como "000.000.000-00", "00000000000", "000 000 000 00"
-	         */
-	        $cpf = preg_replace('/\D/', '', $value);
-	        $num = array();
-	 
-	        /* Cria um array com os valores */
-	        for($i=0; $i<(strlen($cpf)); $i++) {
-	 
-	            $num[]=$cpf[$i];
-	        }
-	 
-	        if(count($num)!=11) {
-	            return false;
-	        }else{
-	            /*
-	            Combinações como 00000000000 e 22222222222 embora
-	            não sejam cpfs reais resultariam em cpfs
-	            válidos após o calculo dos dígitos verificares e
-	            por isso precisam ser filtradas nesta parte.
-	            */
-	            for($i=0; $i<10; $i++)
-	            {
-	                if ($num[0]==$i && $num[1]==$i && $num[2]==$i
-	                 && $num[3]==$i && $num[4]==$i && $num[5]==$i
-	                 && $num[6]==$i && $num[7]==$i && $num[8]==$i)
-	                    {
-	                        return false;
-	                        break;
-	                    }
-	            }
-	        }
-	        /*
-	        Calcula e compara o
-	        primeiro dígito verificador.
-	        */
-	        $j=10;
-	        for($i=0; $i<9; $i++)
-	            {
-	                $multiplica[$i] = $num[$i]*$j;
-	                $j--;
-	            }
-	        $soma = array_sum($multiplica);
-	        $resto = $soma%11;
-	        if($resto<2)
-	            {
-	                $dg=0;
-	            }
-	        else
-	            {
-	                $dg=11-$resto;
-	            }
-	        if($dg!=$num[9])
-	            {
-	                return false;
-	            }
-	        /*
-	        Calcula e compara o
-	        segundo dígito verificador.
-	        */
-	        $j=11;
-	        for($i=0; $i<10; $i++)
-	            {
-	                $multiplica[$i]=$num[$i]*$j;
-	                $j--;
-	            }
-	        $soma = array_sum($multiplica);
-	        $resto = $soma%11;
-	        if($resto<2)
-	            {
-	                $dg=0;
-	            }
-	        else
-	            {
-	                $dg=11-$resto;
-	            }
-	        if($dg!=$num[10])
-	            {
-	                return false;
-	            }
-	        else
-	            {
-	                return true;
-	            }
-	    });
+	    Validator::extend('cpf', function($attribute, $value, $params, $validator){
+		    $cpf = $value;
+		    $cpf = preg_replace('/[^0-9]/', '', $cpf);
+		    $cpf = str_pad($cpf, 11, '0', STR_PAD_LEFT);
+		    if (strlen($cpf) != 11)
+		        return false;
+		    $cpfsCheck = [
+		        '00000000000', 
+		        '11111111111', 
+		        '22222222222', 
+		        '33333333333', 
+		        '44444444444', 
+		        '55555555555', 
+		        '66666666666', 
+		        '77777777777', 
+		        '88888888888', 
+		        '99999999999'
+		    ];
+		    if(in_array($value, $cpfsCheck))
+		        return false;
+		    for ($t = 9; $t < 11; $t++) 
+		    	{
+		        for ($d = 0, $c = 0; $c < $t; $c++) 
+		        {
+		            $d += $cpf{$c} * (($t + 1) - $c);
+		        }
+		        $d = ((10 * $d) % 11) % 10;
+		        if ($cpf{$c} != $d) {
+		            return false;
+		        }
+		    }
+		    return true;
+		});
 	}
     public function register()
     {
